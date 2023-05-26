@@ -7,6 +7,7 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 #sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 sock.bind((SERVER, PORT))
 sock.listen(1)
+
 print ("aceitando conexoes ...")
 
 con, client = sock.accept()
