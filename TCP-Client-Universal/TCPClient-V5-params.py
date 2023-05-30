@@ -1,0 +1,77 @@
+import socket, sys
+
+SERVER_NAME = sys.argv[1]
+PORT = int(sys.argv[2])
+CMD = sys.argv[3]
+
+def createSocket():
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.connect((SERVER_NAME, PORT))
+    return sock
+
+def sendHTTPCommand(cmd):
+    HTTP_CMD = ("GET "+cmd+" HTTP/1.1\r\n"+
+                "Host: "+SERVER_NAME +"\r\n" +
+                "\r\n")
+    sock.sendall(HTTP_CMD.encode())
+
+def getBodyContentLen(body, lenBody):
+    while len(body) < lenBody:
+        body += sock.recv(4096)
+    return body
+
+def getBodyChunked(response):
+    body = b""
+    posNL = response.find(b"\r\n")
+    lenChunk = int (response[:posNL], 16)
+    while lenChunk > 0:
+        response = response[posNL+2:]
+
+        while len(response) < lenChunk:
+            response += sock.recv(4096)
+        body += response[:lenChunk]
+
+        response = response[lenChunk+2:]
+
+        posNL = response.find(b"\r\n")
+        while posNL == -1:
+            response += sock.recv(4096)
+            posNL = response.find(b"\r\n")
+
+        lenChunk = int (response[:posNL], 16)
+
+    return body
+
+def getResponse():
+    buffer = sock.recv(4096)
+
+    pos2NL = buffer.find(b"\r\n\r\n")
+    headers = buffer[:pos2NL]
+    body = buffer[pos2NL+4:]
+
+    print ("Headers:", headers.decode())
+
+    for header in headers.split(b"\r\n"):
+        if header.startswith(b"Content-Length:"):
+            lenBody = int(header.split(b":")[1])
+            body = getBodyContentLen(body, lenBody)
+            break
+        elif header.startswith(b"Transfer-Encoding:"):
+            body = getBodyChunked(body)
+            break
+    return body
+
+def saveBody(fileName, body):
+    fd = open (fileName, "wb")
+    fd.write(body)
+    fd.close()
+
+if (len(sys.argv) != 6) or (sys.argv[4] != "-o"):
+    print ("Uso: ", sys.argv[0], "HOST PORTA SERVICO -o ARQSAIDA")
+    sys.exit(1)
+
+sock = createSocket()
+sendHTTPCommand(CMD)
+body = getResponse()
+sock.close()
+saveBody(sys.argv[5], body)
