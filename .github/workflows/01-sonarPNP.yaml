@@ -1,4 +1,4 @@
-name: SonarQube Scan (Self-Hosted)
+name: SonarQube Scan para ProgRedes 2023.1
 
 on:
   push:
