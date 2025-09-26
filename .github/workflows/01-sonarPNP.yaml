@@ -8,7 +8,7 @@ on:
 jobs:
   sonar:
     name: Run SonarScanner on Self-Hosted Runner
-    runs-on: self-hosted
+    runs-on: [self-hosted, sonar]
 
     steps:
       - name: Checkout código
