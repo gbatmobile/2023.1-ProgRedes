@@ -1,0 +1,25 @@
+name: SonarQube Scan (Self-Hosted)
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  sonar:
+    name: Run SonarScanner on Self-Hosted Runner
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Rodar SonarScanner local
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          sonar-scanner \
+            -Dsonar.projectKey=meu-projeto-github \
+            -Dsonar.sources=. \
+            -Dsonar.host.url=http://sonarqube:9000 \
+            -Dsonar.login=$SONAR_TOKEN
