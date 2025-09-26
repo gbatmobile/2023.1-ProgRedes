@@ -13,7 +13,7 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock.connect((SERVER, PORT))
 sock.settimeout(5)
 
-rua = input ("Nome da rua (ou parte) a buscar Natal/RN: ")
+rua = input ('Nome da rua (ou parte) a buscar Natal/RN: ')
 if rua != '':
     msg   = 'GET /ws/RN/Natal/'+rua+'/json/ HTTP/1.1\r\n'
     msg  += 'Host: viacep.com.br\r\n'
