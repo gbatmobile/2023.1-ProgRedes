@@ -17,9 +17,10 @@ jobs:
       - name: Rodar SonarScanner local
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
         run: |
           sonar-scanner \
-            -Dsonar.projectKey=meu-projeto-github \
+            -Dsonar.projectKey=2023.1- \
             -Dsonar.sources=. \
-            -Dsonar.host.url=http://sonarqube:9000 \
+            -Dsonar.host.url=$SONAR_HOST_URL \
             -Dsonar.login=$SONAR_TOKEN
