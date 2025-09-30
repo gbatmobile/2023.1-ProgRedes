@@ -8,6 +8,7 @@ while True:
     # Lê do usuário o nome do arquivo a pedir ao servidor
     fileName = input("Arquivo a pedir ao servidor: ")
 
+    # TODO: Tratar exceçoes
     # Envia ao servidor do nome do arquivo desejado pelo usuário
     print ("Enviando pedido a", (SERVER, PORT), "para", fileName)
     sock.sendto (fileName.encode('utf-8'), (SERVER, PORT))
